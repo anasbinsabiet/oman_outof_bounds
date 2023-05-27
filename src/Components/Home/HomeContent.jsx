@@ -6,6 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import { Alert } from "react-bootstrap";
 
 const HomeContent = () => {
   const [name, setName] = useState("");
@@ -16,7 +17,7 @@ const HomeContent = () => {
   const [success, setSuccess] = useState("");
   const baseurl = "http://127.0.0.1:5000";
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setValidationErrors("");
     setSuccess("");
@@ -26,14 +27,18 @@ const HomeContent = () => {
       phone: phone,
       message: message,
     };
-    axios
-      .post(`${baseurl}/create`, payload)
-      .then((r) => {
-        setSuccess(r?.message);
-      })
-      .catch((e) => {
-        setValidationErrors(e.message);
-      });
+    try {
+      const response = await axios.post(`${baseurl}/create`, payload);
+      console.log(response);
+      if(response.error){
+        setValidationErrors("Email already exist!");
+      }else{
+        setSuccess(response.data.message);
+      }
+    } catch (error) {
+      setValidationErrors("Email already exist!");
+      console.log(error.message);
+    }
   };
 
   return (
@@ -310,6 +315,16 @@ const HomeContent = () => {
           <div className="row">
             <div className="col-lg-6 col-md-6 contact-left-form my-2 p-5">
               <form onSubmit={(e) => handleSubmit(e)}>
+                {validationErrors && (<Alert variant="danger">
+                  <div className="alert-heading h6">
+                    {validationErrors}
+                  </div>
+                </Alert>)}
+                {success && (<Alert variant="success">
+                  <div className="alert-heading h6">
+                    {success}
+                  </div>
+                </Alert>)}
                 <div className=" form-group contact-forms">
                   <input
                     type="text"
@@ -367,16 +382,6 @@ const HomeContent = () => {
                     }}
                   />
                 </div>
-                {success && (
-                  <div class="form-group contact-forms">
-                    <small className="text-primary h6">{success}</small>
-                  </div>
-                )}
-                {validationErrors && (
-                  <p className="text-center ">
-                    <small className="text-danger h6">{validationErrors}</small>
-                  </p>
-                )}
                 <button type="submit" className="btn btn-block sent-butnn">
                   Send
                 </button>

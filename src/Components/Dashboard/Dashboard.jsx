@@ -184,7 +184,7 @@ const Dashboard = () => {
           </div>
           <div className="box-element-flex">
             <div className="transction">
-              <div className="title-element">List of users</div>
+              <div className="title-element">List of Feedbacks</div>
               <br />
               <div class="table-responsive">
                 <Table rowKey="id" dataSource={dataSource} columns={columns} />
