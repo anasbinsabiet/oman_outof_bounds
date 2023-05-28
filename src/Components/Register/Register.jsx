@@ -1,4 +1,4 @@
-import { faEnvelope, faKey, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faGlobe, faKey, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import Header from "../Home/Header";
 import Footer from "../Home/Footer";
 import axios from "axios";
 import { Alert } from "react-bootstrap";
+import { countryList } from "./CountryList";
 
 const Register = () => {
   const baseurl = "http://127.0.0.1:5000";
@@ -13,6 +14,7 @@ const Register = () => {
   const [firstname, setFirstName] = useState("");
   const [lastname, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [country, setCountry] = useState("");
   const [password, setPassword] = useState("");
   const [validationErrors, setValidationErrors] = useState("");
 
@@ -22,19 +24,24 @@ const Register = () => {
     let payload = {
       firstname: firstname,
       lastname: lastname,
+      country: country,
       email: email,
       password: password,
     };
 
-    try{
+    try {
       const response = await axios.post(`${baseurl}/register`, payload);
-      if(response.data.error === false){
+      if (response.data.error === false) {
         navigate("/login");
       };
-    } catch(e){
+    } catch (e) {
       setValidationErrors(e.response.data.message);
     }
   };
+
+  const handleSelect = (event) => {
+    setCountry(event.target.value)
+  }
   return (
     <div>
       <Header />
@@ -100,6 +107,26 @@ const Register = () => {
                     />
                   </div>
                 </div>
+              </div>
+              <div className="input-group form-group">
+                <div className="input-group-prepend">
+                  <span className="input-group-text">
+                    <FontAwesomeIcon icon={faGlobe} />
+                  </span>
+                </div>
+                <select
+                  className="form-control"
+                  name="country"
+                  onChange={handleSelect}
+                  required="required"
+                >
+                  <option defaultValue>Select {country}</option>
+                  {countryList.map((item, index) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="input-group form-group">
                 <div className="input-group-prepend">

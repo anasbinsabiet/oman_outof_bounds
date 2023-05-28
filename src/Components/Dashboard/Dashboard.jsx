@@ -8,17 +8,18 @@ const Dashboard = () => {
   const baseurl = "http://127.0.0.1:5000";
   const navigate = useNavigate();
   const [dataSource, setDataSource] = useState("");
+  const [users, setUsers] = useState("");
 
-  const columnsIp = [
+  const columnsUsers = [
+    {
+      title: "Name",
+      dataIndex: "firstname",
+      key: "firstname",
+    },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-    },
-    {
-      title: "IP Address",
-      dataIndex: "ip",
-      key: "ip",
     },
     {
       title: "Country",
@@ -43,38 +44,6 @@ const Dashboard = () => {
       key: "message",
     },
   ];
-  const dataSourceIp = [
-    {
-      key: '1',
-      email: 'mike@gmail.com',
-      ip: '32.76.09.01',
-      country: 'Oman',
-    },
-    {
-      key: '2',
-      email: 'sam@gmail.com',
-      ip: '55.02.01.01',
-      country: 'Oman',
-    },
-    {
-      key: '3',
-      email: 'john@gmail.com',
-      ip: '11.76.09.02',
-      country: 'Oman',
-    },
-    {
-      key: '4',
-      email: 'doe@gmail.com',
-      ip: '33.11.19.03',
-      country: 'Oman',
-    },
-    {
-      key: '5',
-      email: 'lusi@gmail.com',
-      ip: '66.76.02.08',
-      country: 'Oman',
-    },
-  ];
   
   const logoutAction = () => {
     localStorage.setItem("token", "");
@@ -90,6 +59,15 @@ const Dashboard = () => {
       .get(`${baseurl}/get_content`)
       .then((r) => {
         setDataSource(r?.data?.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    axios
+      .get(`${baseurl}/users`)
+      .then((r) => {
+        console.log(r?.data?.data);
+        setUsers(r?.data?.data);
       })
       .catch((e) => {
         console.log(e);
@@ -175,16 +153,16 @@ const Dashboard = () => {
         <div className="Box-elements">
           <div className="box-element-flex">
             <div className="transction">
-              <div className="title-element">Visitor IP Address</div>
+              <div className="title-element">List of User</div>
               <br />
               <div class="table-responsive">
-                <Table rowKey="id" dataSource={dataSourceIp} columns={columnsIp} />
+                {users && <Table rowKey="id" dataSource={users} columns={columnsUsers} /> }
               </div>
             </div>
           </div>
           <div className="box-element-flex">
             <div className="transction">
-              <div className="title-element">List of Feedbacks</div>
+              <div className="title-element">List of Feedback</div>
               <br />
               <div class="table-responsive">
                 <Table rowKey="id" dataSource={dataSource} columns={columns} />
